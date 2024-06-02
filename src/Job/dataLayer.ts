@@ -1,25 +1,23 @@
-import msnodesqlv8  from 'npm:msnodesqlv8@4.2.1'
-
+import { Client } from "https://deno.land/x/postgres@v0.17.0/mod.ts";
 import { samplerow } from "./sampleRow.ts";
+import { load } from "https://deno.land/std@0.224.0/dotenv/mod.ts";
 
 
-export function readFromTable(): samplerow[] {
+export async function readFromTable() {
 
-    const sql = msnodesqlv8
+  const env = await load();
 
-    const connectionString = "server=127.0.0.1,1433;Database=TestDb;Trusted_Connection=Yes;Driver={SQL Server Native Client 11.0}";
-    const query = "SELECT [id],[Description] FROM [dbo].[GuidTableFast]";
-    
-    sql.query(connectionString, query, (err, rows) => {
-    
-        if (err != undefined) {
-            throw new ErrorEvent(err.message);
-        }
 
-       return rows;
-    });
+    const client = new Client({
+        user:  env["POSTGRES_USER"],
+        password: env["POSTGRES_PASSWORD"],
+        database: "test",
+        hostname: "localhost",
+        port: 5432,
+      });
 
-    return [];
-
+      await client.connect();
+      const result = await client.queryArray<samplerow[]>("SELECT id, description FROM public.denosample");
+      console.log(result.rows);
 }
 

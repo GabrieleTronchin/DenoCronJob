@@ -1,5 +1,5 @@
 {
-    "tasks": {
-      "start": "deno run --unstable-cron cron.ts"
-    }
+  "tasks": {
+    "start": "deno run --unstable-cron cron.ts"
+  }
 }
